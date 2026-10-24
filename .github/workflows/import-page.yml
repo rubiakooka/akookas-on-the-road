@@ -1,0 +1,23 @@
+name: Import vote page
+on:
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  import:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download vote page
+        run: |
+          curl -c cookies.txt -L -o warning.html "https://filebin.net/pi8rrvab2sixncex/peru-bolivia-family-trip-vote-decide.html"
+          curl -b cookies.txt -L -o index.html "https://filebin.net/pi8rrvab2sixncex/peru-bolivia-family-trip-vote-decide.html"
+          ls -lh index.html
+          test $(stat -c%s index.html) -gt 80000000
+      - name: Commit index.html
+        run: |
+          git config user.name "rubiakooka"
+          git config user.email "rubiakooka@users.noreply.github.com"
+          git add index.html
+          git commit -m "Add index.html"
+          git push
